@@ -6,12 +6,6 @@ from aoc.util import solution
 
 
 class Node(object):
-    parent: Node
-    children: []
-    name: str
-    size: int
-    type: str
-
     def __init__(self, type, name, size, parent):
         self.type = type
         self.name = name
@@ -23,7 +17,7 @@ class Node(object):
         self.children.append(child)
 
     def totalsize(self):
-        return sum([c.totalsize() for c in self.children]) + self.size
+        return sum(c.totalsize() for c in self.children) + self.size
 
     def __repr__(self) -> str:
         return f"type: {self.type}, " \
@@ -34,29 +28,27 @@ class Node(object):
                f"parent: {self.parent}"
 
 
-list_re = re.compile(r"(\d+) ([\w.]+)")
-cmd_re = re.compile(r"\$ (\w+) ([\w.]+)")
+size_re = re.compile(r"(\d+) ([\w.]+)")
 
 
 def build_tree(input):
-    root = node = Node('dir', '/', 0, None)
+    root = pwd = Node('dir', '/', 0, None)
 
     for row in input:
-        if cmd_re.match(row):
-            cmd, target = cmd_re.match(row).groups()
-            match cmd:
-                case 'cd':
-                    match target:
-                        case '/':
-                            node = root
-                        case '..':
-                            node = node.parent
-                        case _:
-                            node = Node('dir', target, 0, node)
-                            node.parent.add_child(node)
-        if list_re.match(row):
-            size, file = list_re.match(row).groups()
-            node.add_child(Node('file', file, int(size), node))
+        if row == '$ cd /':
+            pwd = root
+        elif row == '$ cd ..':
+            pwd = pwd.parent
+        elif row.startswith('$ cd'):
+            pwd = Node('dir', row.split("$ cd ")[1], 0, pwd)
+            pwd.parent.add_child(pwd)
+        elif row == '$ ls':
+            pass
+        elif row.startswith("dir "):
+            pass
+        elif size_re.match(row):
+            size, file = size_re.match(row).groups()
+            pwd.add_child(Node('file', file, int(size), pwd))
 
     return root
 
@@ -64,7 +56,6 @@ def build_tree(input):
 def visit_node(node, callback):
     if node is None:
         return
-
     callback(node)
     for n in node.children:
         visit_node(n, callback)
@@ -72,31 +63,20 @@ def visit_node(node, callback):
 
 @solution(no=1)
 def solve_one(input):
-    def callback(node):
-        if node.type == 'dir' and node.totalsize() <= 100000:
-            dirs.append(node)
-
-    root = build_tree(input)
     dirs = []
-    visit_node(root, callback)
-    return sum([d.totalsize() for d in dirs])
+    visit_node(build_tree(input), lambda x: dirs.append(x))
+    return sum(filter(lambda x: x < 100000, (d.totalsize() for d in dirs if d.type == 'dir')))
 
 
 @solution(no=2)
 def solve_two(input):
     root = build_tree(input)
-    used_space = root.totalsize()
-    total_disk_space = 70000000
-    required_unused_space = 30000000
-    additional_required = required_unused_space - (total_disk_space - used_space)
-
-    def callback(node):
-        if node.type == 'dir' and node.totalsize() > additional_required:
-            dirs.append(node)
+    free_space = 70000000 - root.totalsize()
+    to_free = 30000000 - free_space
 
     dirs = []
-    visit_node(root, callback)
-    return min([d.totalsize() for d in dirs])
+    visit_node(root, lambda x: dirs.append(x))
+    return min(filter(lambda x: x > to_free, (d.totalsize() for d in dirs if d.type == 'dir')))
 
 
 def parse_input(file='input'):
