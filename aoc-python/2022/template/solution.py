@@ -1,23 +1,25 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from aoc.util import solution
 
 
 @solution(no=1)
-def solve_one(input):
+def solve_one(lines):
     pass
 
 
 @solution(no=2)
-def solve_two(input):
+def solve_two(lines):
     pass
 
 
 def parse_input(file='input'):
-    return open(file).read().split("\n")
+    return Path(file).read_text().strip().split("\n")
 
 
 if __name__ == '__main__':
-    input = parse_input()
-    solve_one(input)
-    solve_two(input)
+    lines = parse_input()
+    solve_one(lines)
+    solve_two(lines)
