@@ -54,7 +54,7 @@ def get_neighbours(rows, node: Node) -> [Node]:
     return list(filter(lambda x: not x.visited, neighbours))
 
 
-def solve(ros, starts: [Node], end: Node):
+def solve(rows, starts: [Node], end: Node):
     routes = []
 
     for start in starts:
@@ -72,8 +72,7 @@ def solve(ros, starts: [Node], end: Node):
             if n == end:
                 break
 
-            neighbours = get_neighbours(rows, n)
-            for neighbour in neighbours:
+            for neighbour in get_neighbours(rows, n):
                 neighbour.visited = True
                 neighbour.parent = n
                 queue.push(neighbour)
@@ -99,6 +98,12 @@ def solve_two(rows, starts: [Node], end: Node):
     return solve(rows, starts, end)
 
 
+START_NODE = ord('S') - ord('a')
+END_NODE = ord('E') - ord('a')
+LOWEST_ELEVATION = ord('a') - ord('a')
+HIGHEST_ELEVATION = ord('z') - ord('a')
+
+
 def parse_input(file='input', multiple_starts=False) -> ([[Node]], [Node], Node):
     rows = []
     for y, row in enumerate(Path(file).read_text().strip().split("\n")):
@@ -109,21 +114,22 @@ def parse_input(file='input', multiple_starts=False) -> ([[Node]], [Node], Node)
     starts, end = [], None
     for y in range(len(rows)):
         for x in range(len(rows[y])):
-            if rows[y][x].value == ord('S') - ord('a'):
+            if rows[y][x].value == START_NODE:
                 starts.append(rows[y][x])
-            elif multiple_starts and rows[y][x].value == ord('a') - ord('a'):
+            elif multiple_starts and rows[y][x].value == LOWEST_ELEVATION:
                 starts.append(rows[y][x])
-            elif rows[y][x].value == ord('E') - ord('a'):
+            elif rows[y][x].value == END_NODE:
                 end = rows[y][x]
 
     for start in starts:
-        start.value = ord('a') - ord('a')
-    end.value = ord('z') - ord('a')
+        start.value = LOWEST_ELEVATION
+    end.value = HIGHEST_ELEVATION
     return rows, starts, end
 
 
 if __name__ == '__main__':
     rows, starts, end = parse_input()
     solve_one(rows, starts, end)
+
     rows, starts, end = parse_input(multiple_starts=True)
     solve_two(rows, starts, end)
