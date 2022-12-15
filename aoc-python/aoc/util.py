@@ -25,6 +25,10 @@ class Point:
     def __repr__(self) -> str:
         return f"({self.x}, {self.y})"
 
+    @staticmethod
+    def manhattan_distance(p1, p2):
+        return abs(p1.x - p2.x) + abs(p1.y - p2.y)
+
 
 NORTH = Point(0, -1)
 NORTH_EAST = Point(1, -1)
