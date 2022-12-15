@@ -59,8 +59,7 @@ def solve_two(readings: [SensorReading], high: int = 4000000):
 
     def find_point(readings: [SensorReading], high: int) -> Point | None:
         for reading in readings:
-            x = reading.sensor.x
-            y = reading.sensor.y
+            x, y = reading.sensor.x, reading.sensor.y
             d = reading.distance+1
 
             for i in range(0, d):
