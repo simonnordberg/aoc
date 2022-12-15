@@ -46,7 +46,7 @@ def solve_one(readings: [SensorReading], target_row: int = 2000000):
 @solution(no=2)
 def solve_two(readings: [SensorReading], high: int = 4000000):
     def check_position(x: int, y: int, high: int) -> Point | None:
-        if x < 0 or y < 0 or x > high or y > high:
+        if x < 0 or x > high or y < 0 or y > high:
             return None
 
         p = Point(x, y)
