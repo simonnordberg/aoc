@@ -49,6 +49,14 @@ def sign(n):
         return 0
 
 
+def transpose(xs):
+    return list(map(list, zip(*xs)))
+
+
+def flatten(xs):
+    return [x for xx in xs for x in xx]
+
+
 def solution(no=1):
     def decorator_solution(func):
         @functools.wraps(func)
