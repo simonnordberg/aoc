@@ -21,6 +21,6 @@ def parse_input(file='input'):
 
 
 if __name__ == '__main__':
-    data = parse_input()
+    data = parse_input("input")
     solve_one(deepcopy(data))
     solve_two(deepcopy(data))
