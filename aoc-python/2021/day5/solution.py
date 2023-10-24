@@ -4,16 +4,13 @@ from collections import Counter
 from copy import deepcopy
 from pathlib import Path
 
-from aoc.util import solution, sign
+from aoc.util import solution, sign, ints
 
 
 def solve(data, diagonals=False):
     points = []
     for row in data:
-        x1 = int(row.split()[0].split(",")[0])
-        y1 = int(row.split()[0].split(",")[1])
-        x2 = int(row.split()[2].split(",")[0])
-        y2 = int(row.split()[2].split(",")[1])
+        x1, y1, x2, y2 = ints(row)
 
         if x1 == x2 or y1 == y2:
             for x in range(min(x1, x2), max(x1, x2) + 1):

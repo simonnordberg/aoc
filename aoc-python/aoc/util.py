@@ -1,5 +1,6 @@
 import functools
 from dataclasses import dataclass
+from re import findall
 
 
 @dataclass
@@ -55,6 +56,10 @@ def transpose(xs):
 
 def flatten(xs):
     return [x for xx in xs for x in xx]
+
+
+def ints(s):
+    return list(map(int, findall(r"\d+", s)))
 
 
 def solution(no=1):
