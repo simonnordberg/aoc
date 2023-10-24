@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from pathlib import Path
 
 from aoc.util import solution, read_file, ints
 
