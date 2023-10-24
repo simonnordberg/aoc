@@ -62,6 +62,11 @@ def ints(s):
     return list(map(int, findall(r"\d+", s)))
 
 
+def read_file(file):
+    with open(file, "r") as file:
+        return file.read().splitlines()
+
+
 def solution(no=1):
     def decorator_solution(func):
         @functools.wraps(func)
