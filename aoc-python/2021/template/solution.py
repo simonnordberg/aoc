@@ -6,12 +6,12 @@ from aoc.util import solution, read_file, ints
 
 
 @solution(no=1)
-def solve_one(data):
+def solve_one(ll):
     pass
 
 
 @solution(no=2)
-def solve_two(data):
+def solve_two(ll):
     pass
 
 
@@ -20,6 +20,6 @@ def parse(line):
 
 
 if __name__ == '__main__':
-    data = list(map(parse, read_file("input")))
-    solve_one(deepcopy(data))
-    solve_two(deepcopy(data))
+    _data = list(map(parse, read_file("input")))
+    solve_one(deepcopy(_data))
+    solve_two(deepcopy(_data))
