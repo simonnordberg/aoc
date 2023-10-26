@@ -6,12 +6,12 @@ from aoc.util import solution, read_file, ints
 
 
 @solution(no=1)
-def solve_one(ll):
+def solve_one(xs):
     pass
 
 
 @solution(no=2)
-def solve_two(ll):
+def solve_two(xs):
     pass
 
 
