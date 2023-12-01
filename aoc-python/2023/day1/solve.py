@@ -20,7 +20,8 @@ def solve_two(xs):
 def parse(line, replace=False):
     if replace:
         line = (
-            line.replace("one", "o1e")
+            line
+            .replace("one", "o1e")
             .replace("two", "t2o")
             .replace("three", "t3e")
             .replace("four", "f4r")
@@ -31,7 +32,7 @@ def parse(line, replace=False):
             .replace("nine", "n9e")
         )
 
-    return ints("|".join([*line.strip()]))
+    return ints(line.strip(), single_digit=True)
 
 
 if __name__ == '__main__':

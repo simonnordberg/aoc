@@ -1,4 +1,5 @@
 import functools
+import unittest
 from dataclasses import dataclass
 from re import findall
 
@@ -58,8 +59,10 @@ def flatten(xs):
     return [x for xx in xs for x in xx]
 
 
-def ints(s):
-    return list(map(int, findall(r"\d+", s)))
+def ints(s, single_digit=False, negatives=False):
+    pattern = (f"{'-?' if negatives else ''}\\d"
+               f"{'' if single_digit else '+'}")
+    return list(map(int, findall(pattern, s)))
 
 
 def read_file(file):
@@ -78,3 +81,24 @@ def solution(no=1):
         return wrapper
 
     return decorator_solution
+
+
+class TestInts(unittest.TestCase):
+    def test_basic(self):
+        self.assertEqual(ints("123 abc -456"), [123, 456])
+
+    def test_single_digit(self):
+        self.assertEqual(ints("123 abc -456", single_digit=True), [1, 2, 3, 4, 5, 6])
+
+    def test_negatives(self):
+        self.assertEqual(ints("123 abc -456", negatives=True), [123, -456])
+
+    def test_single_digit_negatives(self):
+        self.assertEqual(ints("123 abc -456", single_digit=True, negatives=True), [1, 2, 3, -4, 5, 6])
+
+    def test_no_numbers(self):
+        self.assertEqual(ints("abc def"), [])
+
+
+if __name__ == '__main__':
+    unittest.main()
