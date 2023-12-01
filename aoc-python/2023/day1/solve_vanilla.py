@@ -1,6 +1,6 @@
 """
 Description:
-    Vanilla Python implementation using nothing but stdlib.
+    Vanilla Python implementation using only stdlib.
 """
 
 import sys
@@ -11,6 +11,7 @@ part2 = 0
 for line in sys.stdin.read().strip().split("\n"):
     part1_digits = []
     part2_digits = []
+
     for i, c in enumerate(line):
         if c.isdigit():
             part1_digits.append(c)
