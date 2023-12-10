@@ -17,47 +17,21 @@ def print_graph(G):
     for y in range(max(p.y for p in G)):
         for x in range(max(p.x for p in G)):
             print(G[Point(x, y)], end="")
-
         print()
 
 
-def DFS(G, v, seen=None, path=None):
-    if seen is None:
-        seen = []
-    if path is None:
-        path = [v]
-
-    seen.append(v)
-
-    paths = []
-
-    if v + NORTH in G and G[v + NORTH] in ["|", "F"]:
-        tmp.append(v + NORTH)
-    if v + EAST in G and G[v + EAST] in ["-", "7", "J"]:
-        tmp.append(v + EAST)
-    if v + SOUTH in G and G[v + SOUTH] in ["|", "L", "J"]:
-        tmp.append(v + SOUTH)
-    if v + WEST in G and G[v + WEST] in ["-", "L", "F"]:
-        tmp.append(v + WEST)
-    for t in tmp:
-        if t not in seen:
-            tpath = path + [t]
-            paths.append(tuple(tpath))
-            paths.extend(DFS(G, t, seen, tpath))
-
-    return paths
-
-
 def furthest_node(G, start):
+    node, distance = start, 0
+
     seen = set()
-    Q = deque([start])
-    seen.add(start)
+    seen.add(node)
+    Q = deque([(node, distance)])
 
     while Q:
-        node = Q.popleft()
+        node, distance = Q.popleft()
 
         neighbours = []
-        if node + NORTH in G and G[node + NORTH] in ["|", "F"]:
+        if node + NORTH in G and G[node + NORTH] in ["|", "F", "7"]:
             neighbours.append(node + NORTH)
         if node + EAST in G and G[node + EAST] in ["-", "7", "J"]:
             neighbours.append(node + EAST)
@@ -69,12 +43,9 @@ def furthest_node(G, start):
         for t in neighbours:
             if t not in seen:
                 seen.add(t)
-                Q.append(t)
+                Q.append((t, distance + 1))
 
-        
+    return node, distance
 
-paths = DFS(G, S[0])
-print_graph(G)
-for p in paths:
-    print(p)
-print(max(len(p) for p in paths))
+
+print("p1:", furthest_node(G, S[0])[1])
