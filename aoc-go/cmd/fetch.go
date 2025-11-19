@@ -81,7 +81,7 @@ func runFetch(cmd *cobra.Command, args []string) error {
 
 func fetchInputContent(year, day int, inputType, cookie string) (string, error) {
 	url := fmt.Sprintf("https://adventofcode.com/%d/day/%d/%s", year, day, inputType)
-	
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed to create request: %w", err)
@@ -133,5 +133,3 @@ func writeToFile(content, filename string) error {
 func getCurrentYear() int {
 	return time.Now().Year()
 }
-
-

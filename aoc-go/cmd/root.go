@@ -24,5 +24,3 @@ func init() {
 	rootCmd.AddCommand(fetchCmd)
 	rootCmd.AddCommand(runCmd)
 }
-
-

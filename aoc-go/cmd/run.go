@@ -39,5 +39,3 @@ func runRun(cmd *cobra.Command, args []string) error {
 	fmt.Printf("Running solution for %d day %d\n", runYear, day)
 	return nil
 }
-
-
