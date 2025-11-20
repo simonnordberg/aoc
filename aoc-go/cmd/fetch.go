@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -12,10 +14,10 @@ import (
 )
 
 var (
-	fetchYear   int
-	fetchInput  string
-	fetchDebug  bool
-	fetchStdout bool
+	fetchYear      int
+	fetchDebug     bool
+	fetchStdout    bool
+	fetchInputName string
 )
 
 var fetchCmd = &cobra.Command{
@@ -24,7 +26,10 @@ var fetchCmd = &cobra.Command{
 	Long: `Fetch the puzzle input from adventofcode.com for a specific day.
 Requires AOC_SESSION environment variable to be set with your session cookie.
 
-Example: aoc fetch 1 --year 2024`,
+By default, saves to a file named 'input'. Use --input flag to override.
+
+Example: aoc fetch 1 --year 2024
+         aoc fetch 5 --input input2 --year 2024`,
 	Args: cobra.ExactArgs(1),
 	RunE: runFetch,
 }
@@ -32,9 +37,9 @@ Example: aoc fetch 1 --year 2024`,
 func init() {
 	fetchCmd.SilenceUsage = true
 	fetchCmd.Flags().IntVarP(&fetchYear, "year", "y", getCurrentYear(), "Year of the puzzle")
-	fetchCmd.Flags().StringVarP(&fetchInput, "input", "i", "input", "Input name to fetch (e.g., input, input2, input3)")
 	fetchCmd.Flags().BoolVarP(&fetchDebug, "debug", "d", false, "Print fetched content to stdout")
 	fetchCmd.Flags().BoolVar(&fetchStdout, "stdout", false, "Output to stdout instead of saving to file")
+	fetchCmd.Flags().StringVar(&fetchInputName, "input", "input", "Filename of the input file to fetch and save with the same name (e.g., input, input2, input3)")
 }
 
 func runFetch(cmd *cobra.Command, args []string) error {
@@ -48,6 +53,8 @@ func runFetch(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("day must be between 1 and 25, got %d", day)
 	}
 
+	filename := fetchInputName
+
 	// Get session cookie
 	cookie := os.Getenv("AOC_SESSION")
 	if cookie == "" {
@@ -55,7 +62,7 @@ func runFetch(cmd *cobra.Command, args []string) error {
 	}
 
 	// Fetch the input
-	content, err := fetchInputContent(fetchYear, day, fetchInput, cookie)
+	content, err := fetchInputContent(fetchYear, day, filename, cookie)
 	if err != nil {
 		return err
 	}
@@ -66,8 +73,15 @@ func runFetch(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	// Write to file
-	if err := writeToFile(content, fetchInput); err != nil {
+	// Create testdata directory path: testdata/YYYY/dayDD/
+	testdataDir := filepath.Join("testdata", strconv.Itoa(fetchYear), fmt.Sprintf("day%02d", day))
+	if err := os.MkdirAll(testdataDir, 0755); err != nil {
+		return fmt.Errorf("failed to create testdata directory %s: %w", testdataDir, err)
+	}
+
+	// Write to file in testdata directory
+	filePath := filepath.Join(testdataDir, filename)
+	if err := writeToFile(content, filePath); err != nil {
 		return err
 	}
 
@@ -75,12 +89,12 @@ func runFetch(cmd *cobra.Command, args []string) error {
 		fmt.Println(content)
 	}
 
-	fmt.Printf("✓ Puzzle input for %d day %d saved to %s\n", fetchYear, day, fetchInput)
+	fmt.Printf("✓ Puzzle input for %d day %d saved to %s\n", fetchYear, day, filePath)
 	return nil
 }
 
-func fetchInputContent(year, day int, inputType, cookie string) (string, error) {
-	url := fmt.Sprintf("https://adventofcode.com/%d/day/%d/%s", year, day, inputType)
+func fetchInputContent(year, day int, filename, cookie string) (string, error) {
+	url := fmt.Sprintf("https://adventofcode.com/%d/day/%d/%s", year, day, filename)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

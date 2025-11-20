@@ -1,0 +1,50 @@
+package y2024
+
+import (
+	"fmt"
+	"strconv"
+	"strings"
+
+	"github.com/simonnordberg/aoc/solutions"
+)
+
+type dayXX struct{}
+
+func init() {
+	solutions.Register(2024, XX, dayXX{})
+}
+
+func (dayXX) Part1(input string) (string, error) {
+	lines := strings.Split(strings.TrimSpace(input), "\n")
+
+	// Parse input
+	for _, line := range lines {
+		if line == "" {
+			continue
+		}
+		// Parse line
+		_ = line
+	}
+
+	result := 0
+
+	return fmt.Sprintf("%d", result), nil
+}
+
+func (dayXX) Part2(input string) (string, error) {
+	lines := strings.Split(strings.TrimSpace(input), "\n")
+
+	// Parse input
+	for _, line := range lines {
+		if line == "" {
+			continue
+		}
+		// Parse line
+		_ = line
+	}
+
+	result := 0
+
+	return fmt.Sprintf("%d", result), nil
+}
+
